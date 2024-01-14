@@ -1,13 +1,13 @@
 ﻿@page
-@model BeautyServices.Pages.Services.DeleteModel
+@model CarService.Pages.Services.DeleteModel
 
 @{
     ViewData["Title"] = "Delete";
 }
 
-<h1>Delete</h1>
+<h1>Stergere</h1>
 
-<h3>Are you sure you want to delete this?</h3>
+<h3>Esti sigur ca vreai sa stergi asta?</h3>
 <div>
     <h4>Service</h4>
     <hr />
@@ -34,7 +34,7 @@
     
     <form method="post">
         <input type="hidden" asp-for="Service.ServiceId" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-page="./Index">Back to List</a>
+        <input type="submit" value="Sterge" class="btn btn-danger" /> |
+        <a asp-page="./Index">Inapoi la toata lista</a>
     </form>
 </div>

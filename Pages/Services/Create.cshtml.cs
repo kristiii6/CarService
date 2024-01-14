@@ -5,17 +5,19 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using BeautyServices.Data;
-using BeautyServices.Models;
+using CarService.Data;
+using CarService.Models;
 using System.Security.Policy;
+using Microsoft.AspNetCore.Authorization;
 
-namespace BeautyServices.Pages.Services
+namespace CarService.Pages.Services
 {
-    public class CreateModel : PageModel
+    [Authorize(Roles = "Admin")]
+    public class CreateModel : ServiceGroupsPageModel
     {
-        private readonly BeautyServices.Data.BeautyServicesContext _context;
+        private readonly CarService.Data.CarServiceContext _context;
 
-        public CreateModel(BeautyServices.Data.BeautyServicesContext context)
+        public CreateModel(CarService.Data.CarServiceContext context)
         {
             _context = context;
         }
@@ -24,20 +26,35 @@ namespace BeautyServices.Pages.Services
         {
             ViewData["RoomID"] = new SelectList(_context.Set<Room>(), "ID",
 "RoomName");
+            var service = new Service();
+            service.ServiceGroups = new List<ServiceGroup>();
+            PopulateAssignedGroupData(_context, service);
             return Page();
         }
 
         [BindProperty]
-        public Service Service { get; set; } = default!;
+        public Service Service { get; set; } 
         
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(string[] selectedGroups)
         {
-          if (!ModelState.IsValid || _context.Service == null || Service == null)
+            var newService = new Service();
+            if(selectedGroups != null)
             {
-                return Page();
+                newService.ServiceGroups = new List<ServiceGroup>();
+                foreach (var gr in selectedGroups)
+                {
+                    var grToAdd = new ServiceGroup
+                    {
+                        GroupID = int.Parse(gr)
+
+                    };
+                    newService.ServiceGroups.Add(grToAdd);
+                }
             }
+
+            Service.ServiceGroups = newService.ServiceGroups;
 
             _context.Service.Add(Service);
             await _context.SaveChangesAsync();

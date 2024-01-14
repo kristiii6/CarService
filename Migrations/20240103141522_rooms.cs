@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace BeautyServices.Migrations
+namespace CarService.Migrations
 {
     public partial class rooms : Migration
     {

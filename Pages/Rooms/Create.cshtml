@@ -1,13 +1,13 @@
 ﻿@page
-@model BeautyServices.Pages.Rooms.CreateModel
+@model CarService.Pages.Rooms.CreateModel
 
 @{
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+<h1>Creaza</h1>
 
-<h4>Room</h4>
+<h4>Sala</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -19,14 +19,14 @@
                 <span asp-validation-for="Room.RoomName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Creaza" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-page="Index">Back to List</a>
+    <a asp-page="Index">Inapoi la toata lista</a>
 </div>
 
 @section Scripts {

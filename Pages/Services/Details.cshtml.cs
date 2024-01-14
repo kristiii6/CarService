@@ -5,16 +5,18 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using BeautyServices.Data;
-using BeautyServices.Models;
+using CarService.Data;
+using CarService.Models;
+using Microsoft.AspNetCore.Authorization;
 
-namespace BeautyServices.Pages.Services
+namespace CarService.Pages.Services
 {
+    [Authorize(Roles = "Admin")]
     public class DetailsModel : PageModel
     {
-        private readonly BeautyServices.Data.BeautyServicesContext _context;
+        private readonly CarService.Data.CarServiceContext _context;
 
-        public DetailsModel(BeautyServices.Data.BeautyServicesContext context)
+        public DetailsModel(CarService.Data.CarServiceContext context)
         {
             _context = context;
         }

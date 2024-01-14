@@ -8,7 +8,7 @@
     }
   },
   "profiles": {
-    "BeautyServices": {
+    "CarService": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,

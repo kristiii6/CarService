@@ -1,20 +1,35 @@
-﻿@page
-@model BeautyServices.Pages.Services.IndexModel
+﻿@page "/"
+@model CarService.Pages.Services.IndexModel
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+
+<h1>Bine ai venit pe site-ul nostru!</h1>
 
 <p>
-    <a asp-page="Create">Create New</a>
+    <a asp-page="Create">Adauga un serviciu nou. (DOAR ADMIN)</a>
 </p>
+
+<form asp-page="./Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Cauta servicii dupa nume:
+            <input type="text" name="SearchString" value="@Model.CurrentFilter" />
+            <input type="submit" value="Cauta" class="btn btn-primary" /> |
+            <a asp-page="./Index">Inapoi la toata lista</a>
+        </p>
+    </div>
+</form>
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Service[0].Name)
+                <a asp-page="./Index" asp-route-sortOrder="@Model.NameSort">
+                    @Html.DisplayNameFor(model => model.Service[0].Name)
+                    </a>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Service[0].Description)
@@ -25,12 +40,20 @@
             <th>
                 @Html.DisplayNameFor(model => model.Service[0].Room.RoomName)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Service[0].ServiceGroups)
+            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Service) {
-        <tr>
+@foreach (var item in Model.ServiceD.Services) {
+
+            string selectedRow = "";
+            if(item.ServiceId == Model.ServiceId){
+                selectedRow = "table-success";
+            }
+            <tr class="@selectedRow">
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
@@ -43,10 +66,18 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Room.RoomName)
                 </td>
+                <td>
+                    @{
+                        foreach(var gr in item.ServiceGroups)
+                        {
+                            @gr.Group.ID @: @gr.Group.CategoryName <br/>
+                        }
+                    }
+                </td>
             <td>
-                <a asp-page="./Edit" asp-route-id="@item.ServiceId">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.ServiceId">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.ServiceId">Delete</a>
+                <a asp-page="./Edit" asp-route-id="@item.ServiceId">Editeaza</a> |
+                <a asp-page="./Details" asp-route-id="@item.ServiceId">Detalii</a> |
+                <a asp-page="./Delete" asp-route-id="@item.ServiceId">Sterge</a>
             </td>
         </tr>
 }

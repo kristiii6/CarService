@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace BeautyServices.Pages.Home
+namespace CarService.Pages.Home
 {
     public class IndexModel : PageModel
     {

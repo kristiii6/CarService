@@ -5,16 +5,16 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using BeautyServices.Data;
-using BeautyServices.Models;
+using CarService.Data;
+using CarService.Models;
 
-namespace BeautyServices.Pages.Rooms
+namespace CarService.Pages.Rooms
 {
     public class CreateModel : PageModel
     {
-        private readonly BeautyServices.Data.BeautyServicesContext _context;
+        private readonly CarService.Data.CarServiceContext _context;
 
-        public CreateModel(BeautyServices.Data.BeautyServicesContext context)
+        public CreateModel(CarService.Data.CarServiceContext context)
         {
             _context = context;
         }

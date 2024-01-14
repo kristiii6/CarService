@@ -6,16 +6,18 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using BeautyServices.Data;
-using BeautyServices.Models;
+using CarService.Data;
+using CarService.Models;
+using Microsoft.AspNetCore.Authorization;
 
-namespace BeautyServices.Pages.Services
+namespace CarService.Pages.Services
 {
-    public class EditModel : PageModel
+    [Authorize(Roles = "Admin")]
+    public class EditModel : ServiceGroupsPageModel
     {
-        private readonly BeautyServices.Data.BeautyServicesContext _context;
+        private readonly CarService.Data.CarServiceContext _context;
 
-        public EditModel(BeautyServices.Data.BeautyServicesContext context)
+        public EditModel(CarService.Data.CarServiceContext context)
         {
             _context = context;
         }
@@ -30,49 +32,61 @@ namespace BeautyServices.Pages.Services
                 return NotFound();
             }
 
-            var service =  await _context.Service.FirstOrDefaultAsync(m => m.ServiceId == id);
-            if (service == null)
+            Service = await _context.Service
+                .Include(s => s.Room)
+                .Include(s => s.ServiceGroups)
+                .ThenInclude(s => s.Group)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.ServiceId == id);
+
+            //         var service =  await _context.Service.FirstOrDefaultAsync(m => m.ServiceId == id);
+            if (Service == null)
             {
                 return NotFound();
             }
-            Service = service;
+
+            PopulateAssignedGroupData(_context, Service);
+
+
             ViewData["RoomID"] = new SelectList(_context.Set<Room>(), "ID", "RoomName");
             return Page();
         }
 
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int? id, string[] selectedGroups)
         {
-            if (!ModelState.IsValid)
+            if (id == null)
             {
-                return Page();
+                return NotFound();
             }
 
-            _context.Attach(Service).State = EntityState.Modified;
+            //_context.Attach(Service).State = EntityState.Modified;
 
-            try
+            var serviceToUpdate = await _context.Service
+                .Include(i => i.Room)
+                .Include(i => i.ServiceGroups)
+                .ThenInclude(i => i.Group)
+                .FirstOrDefaultAsync(s => s.ServiceId == id);
+            if (serviceToUpdate == null)
             {
+                return NotFound();
+            }
+
+            if (await TryUpdateModelAsync<Service>(
+                serviceToUpdate,
+                "Service",
+                i => i.Name, i => i.Price, i => i.RoomID))
+            {
+                UpdateServiceGroups(_context, selectedGroups, serviceToUpdate);
                 await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ServiceExists(Service.ServiceId))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return RedirectToPage("./Index");
+
             }
 
-            return RedirectToPage("./Index");
-        }
-
-        private bool ServiceExists(int id)
-        {
-          return (_context.Service?.Any(e => e.ServiceId == id)).GetValueOrDefault();
+            UpdateServiceGroups(_context, selectedGroups, serviceToUpdate);
+            PopulateAssignedGroupData(_context, serviceToUpdate);
+            return Page();
         }
     }
 }

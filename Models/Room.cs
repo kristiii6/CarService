@@ -1,4 +1,4 @@
-﻿namespace BeautyServices.Models
+﻿namespace CarService.Models
 {
     public class Room
     {
